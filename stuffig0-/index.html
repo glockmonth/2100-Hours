@@ -1,152 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2100 Hours Leaderboard | PSRP</title>
-    <style>
-        /* ================== KEEP ALL YOUR ORIGINAL STYLES ================== */
-        * {margin:0; padding:0; box-sizing:border-box;}
-        :root {
-            --blood-red: #d41f1f; --neon-red: #ff0000; --gold: #ffd700;
-            --silver: #c0c0c0; --bronze: #cd7f32; --dark-bg: #0a0a0a;
-            --charcoal: #1a1a1a; --light-gray: #cccccc; --hover-glow: 0 0 20px rgba(212, 31, 31, 0.6);
-        }
-        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, var(--dark-bg) 0%, #000 100%); color: var(--light-gray); line-height: 1.6; overflow-x:hidden; min-height:100vh;}
-        header {background: rgba(26,26,26,0.95); backdrop-filter: blur(10px); padding:1.5rem 0; border-bottom:2px solid var(--blood-red); box-shadow:0 4px 20px rgba(0,0,0,0.8);}
-        .header-content {max-width:1400px; margin:0 auto; padding:0 2rem; text-align:center;}
-        .logo {font-size:3rem; font-weight:900; color: var(--blood-red); text-shadow:0 0 20px var(--neon-red); letter-spacing:0.1em; margin-bottom:0.5rem;}
-        .subtitle {font-size:1.2rem; color:#888; text-transform:uppercase; letter-spacing:0.2em;}
-        .container {max-width:1400px; margin:3rem auto; padding:0 2rem;}
-        .stats-bar {display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:2rem; margin-bottom:3rem;}
-        .stat-card {background: linear-gradient(135deg, var(--charcoal) 0%, #0f0f0f 100%); padding:2rem; border-radius:12px; border:2px solid transparent; text-align:center; transition: all 0.3s ease; position: relative; overflow:hidden;}
-        .stat-card::before {content:''; position:absolute; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, var(--blood-red), var(--neon-red));}
-        .stat-card:hover {border-color:var(--blood-red); box-shadow:var(--hover-glow); transform: translateY(-5px);}
-        .stat-value {font-size:3rem; font-weight:900; color:var(--blood-red); text-shadow:0 0 10px var(--neon-red);}
-        .stat-label {font-size:0.9rem; color:#888; text-transform:uppercase; letter-spacing:0.1em; margin-top:0.5rem;}
-        .podium-section {margin-bottom:4rem;}
-        .section-title {font-size:2.5rem; font-weight:900; color:var(--blood-red); text-transform:uppercase; margin-bottom:2rem; text-align:center; text-shadow:0 0 15px var(--neon-red); letter-spacing:0.05em;}
-        .podium {display:grid; grid-template-columns: repeat(3, 1fr); gap:2rem; align-items:flex-end; max-width:1000px; margin:0 auto; padding:2rem 0;}
-        .podium-place:nth-child(1) { order:2; } 
-        .podium-place:nth-child(2) { order:1; }
-        .podium-place:nth-child(3) { order:3; }
-        .podium-place {background: linear-gradient(135deg, var(--charcoal) 0%, #0f0f0f 100%); border-radius:16px; padding:2rem; text-align:center; position:relative; transition: all 0.3s ease; border:3px solid transparent;}
-        .podium-place.first {border-color:var(--gold); box-shadow:0 0 30px rgba(255,215,0,0.3); min-height:400px;}
-        .podium-place.second {border-color:var(--silver); box-shadow:0 0 20px rgba(192,192,192,0.2); min-height:350px;}
-        .podium-place.third {border-color:var(--bronze); box-shadow:0 0 20px rgba(205,127,50,0.2); min-height:300px;}
-        .rank-badge {width:80px;height:80px;margin:0 auto 1rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;position:relative;}
-        .first .rank-badge {background:linear-gradient(135deg, var(--gold), #ffed4e); color:#000; box-shadow:0 0 20px var(--gold);}
-        .second .rank-badge {background:linear-gradient(135deg, var(--silver), #e0e0e0); color:#000; box-shadow:0 0 15px var(--silver);}
-        .third .rank-badge {background:linear-gradient(135deg, var(--bronze), #e89b5a); color:#000; box-shadow:0 0 15px var(--bronze);}
-        .first .rank-badge::before {content:'👑'; position:absolute; top:-30px; font-size:2rem;}
-        .player-name {font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:0.5rem;}
-        .player-hours {font-size:3rem; font-weight:900; margin:1rem 0;}
-        .first .player-hours {color:var(--gold); text-shadow:0 0 20px var(--gold);}
-        .second .player-hours {color:var(--silver); text-shadow:0 0 15px var(--silver);}
-        .third .player-hours {color:var(--bronze); text-shadow:0 0 15px var(--bronze);}
-        .hours-label {font-size:0.9rem; color:#888; text-transform:uppercase; letter-spacing:0.1em;}
-        .leaderboard-section {margin-top:4rem;}
-        .leaderboard-table {width:100%; border-collapse:collapse; background:var(--charcoal); border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.5);}
-        .leaderboard-table thead {background: linear-gradient(90deg, var(--blood-red), #a01515);}
-        .leaderboard-table th {padding:1.5rem; text-align:left; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#fff; font-size:0.9rem;}
-        .leaderboard-table td {padding:1.2rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.05); color:#bbb;}
-        .rank-cell {font-weight:900; font-size:1.3rem; color:var(--blood-red); text-align:center;}
-        .name-cell {font-weight:600; font-size:1.1rem; color:#fff;}
-        .hours-cell {font-weight:700; font-size:1.2rem; color:var(--blood-red); font-family:'Courier New', monospace;}
-        footer {background: var(--charcoal); text-align:center; padding:2rem; margin-top:4rem; border-top:2px solid var(--blood-red); color:#666;}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2100 Hours Leaderboard | PSRP</title>
+<style>
+/* ================== KEEP ALL YOUR ORIGINAL STYLES ================== */
+* {margin:0; padding:0; box-sizing:border-box;}
+:root {
+    --blood-red: #d41f1f; --neon-red: #ff0000; --gold: #ffd700;
+    --silver: #c0c0c0; --bronze: #cd7f32; --dark-bg: #0a0a0a;
+    --charcoal: #1a1a1a; --light-gray: #cccccc; --hover-glow: 0 0 20px rgba(212, 31, 31, 0.6);
+}
+body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, var(--dark-bg) 0%, #000 100%); color: var(--light-gray); line-height: 1.6; overflow-x:hidden; min-height:100vh;}
+header {background: rgba(26,26,26,0.95); backdrop-filter: blur(10px); padding:1.5rem 0; border-bottom:2px solid var(--blood-red); box-shadow:0 4px 20px rgba(0,0,0,0.8);}
+.header-content {max-width:1400px; margin:0 auto; padding:0 2rem; text-align:center;}
+.logo {font-size:3rem; font-weight:900; color: var(--blood-red); text-shadow:0 0 20px var(--neon-red); letter-spacing:0.1em; margin-bottom:0.5rem;}
+.subtitle {font-size:1.2rem; color:#888; text-transform:uppercase; letter-spacing:0.2em;}
+.container {max-width:1400px; margin:3rem auto; padding:0 2rem;}
+.stats-bar {display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:2rem; margin-bottom:3rem;}
+.stat-card {background: linear-gradient(135deg, var(--charcoal) 0%, #0f0f0f 100%); padding:2rem; border-radius:12px; border:2px solid transparent; text-align:center; transition: all 0.3s ease; position: relative; overflow:hidden;}
+.stat-card::before {content:''; position:absolute; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, var(--blood-red), var(--neon-red));}
+.stat-card:hover {border-color:var(--blood-red); box-shadow:var(--hover-glow); transform: translateY(-5px);}
+.stat-value {font-size:3rem; font-weight:900; color:var(--blood-red); text-shadow:0 0 10px var(--neon-red);}
+.stat-label {font-size:0.9rem; color:#888; text-transform:uppercase; letter-spacing:0.1em; margin-top:0.5rem;}
+.podium-section {margin-bottom:4rem;}
+.section-title {font-size:2.5rem; font-weight:900; color:var(--blood-red); text-transform:uppercase; margin-bottom:2rem; text-align:center; text-shadow:0 0 15px var(--neon-red); letter-spacing:0.05em;}
+.podium {display:grid; grid-template-columns: repeat(3, 1fr); gap:2rem; align-items:flex-end; max-width:1000px; margin:0 auto; padding:2rem 0;}
+.podium-place:nth-child(1) { order:2; } 
+.podium-place:nth-child(2) { order:1; }
+.podium-place:nth-child(3) { order:3; }
+.podium-place {background: linear-gradient(135deg, var(--charcoal) 0%, #0f0f0f 100%); border-radius:16px; padding:2rem; text-align:center; position:relative; transition: all 0.3s ease; border:3px solid transparent;}
+.podium-place.first {border-color:var(--gold); box-shadow:0 0 30px rgba(255,215,0,0.3); min-height:400px;}
+.podium-place.second {border-color:var(--silver); box-shadow:0 0 20px rgba(192,192,192,0.2); min-height:350px;}
+.podium-place.third {border-color:var(--bronze); box-shadow:0 0 20px rgba(205,127,50,0.2); min-height:300px;}
+.rank-badge {width:80px;height:80px;margin:0 auto 1rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;position:relative;}
+.first .rank-badge {background:linear-gradient(135deg, var(--gold), #ffed4e); color:#000; box-shadow:0 0 20px var(--gold);}
+.second .rank-badge {background:linear-gradient(135deg, var(--silver), #e0e0e0); color:#000; box-shadow:0 0 15px var(--silver);}
+.third .rank-badge {background:linear-gradient(135deg, var(--bronze), #e89b5a); color:#000; box-shadow:0 0 15px var(--bronze);}
+.first .rank-badge::before {content:'👑'; position:absolute; top:-30px; font-size:2rem;}
+.player-name {font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:0.5rem;}
+.player-hours {font-size:3rem; font-weight:900; margin:1rem 0;}
+.first .player-hours {color:var(--gold); text-shadow:0 0 20px var(--gold);}
+.second .player-hours {color:var(--silver); text-shadow:0 0 15px var(--silver);}
+.third .player-hours {color:var(--bronze); text-shadow:0 0 15px var(--bronze);}
+.hours-label {font-size:0.9rem; color:#888; text-transform:uppercase; letter-spacing:0.1em;}
+.leaderboard-section {margin-top:4rem;}
+.leaderboard-table {width:100%; border-collapse:collapse; background:var(--charcoal); border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.5);}
+.leaderboard-table thead {background: linear-gradient(90deg, var(--blood-red), #a01515);}
+.leaderboard-table th {padding:1.5rem; text-align:left; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#fff; font-size:0.9rem;}
+.leaderboard-table td {padding:1.2rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.05); color:#bbb;}
+.rank-cell {font-weight:900; font-size:1.3rem; color:var(--blood-red); text-align:center;}
+.name-cell {font-weight:600; font-size:1.1rem; color:#fff;}
+.hours-cell {font-weight:700; font-size:1.2rem; color:var(--blood-red); font-family:'Courier New', monospace;}
+footer {background: var(--charcoal); text-align:center; padding:2rem; margin-top:4rem; border-top:2px solid var(--blood-red); color:#666;}
+</style>
 </head>
 <body>
 
 <header>
-    <div class="header-content">
-        <div class="logo">2100</div>
-        <div class="subtitle">Weekly Hours Leaderboard</div>
-    </div>
+<div class="header-content">
+    <div class="logo">2100</div>
+    <div class="subtitle">Weekly Hours Leaderboard</div>
+</div>
 </header>
 
 <div class="container">
-    <div class="stats-bar">
-        <div class="stat-card">
-            <div class="stat-value" id="total-members">0</div>
-            <div class="stat-label">Total Members</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="total-hours">0</div>
-            <div class="stat-label">Total Hours This Week</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="avg-hours">0</div>
-            <div class="stat-label">Average Hours/Member</div>
-        </div>
+<div class="stats-bar">
+    <div class="stat-card">
+        <div class="stat-value" id="total-members">0</div>
+        <div class="stat-label">Total Members</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-value" id="total-hours">0</div>
+        <div class="stat-label">Total Hours This Week</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="avg-hours">0</div>
+        <div class="stat-label">Average Hours/Member</div>
+    </div>
+</div>
 
-    <section class="podium-section">
-        <h2 class="section-title">🏆 Top Performers</h2>
-        <div class="podium">
-            <div class="podium-place first" id="podium-1"></div>
-            <div class="podium-place second" id="podium-2"></div>
-            <div class="podium-place third" id="podium-3"></div>
-        </div>
-    </section>
+<section class="podium-section">
+    <h2 class="section-title">🏆 Top Performers</h2>
+    <div class="podium">
+        <div class="podium-place first" id="podium-1"></div>
+        <div class="podium-place second" id="podium-2"></div>
+        <div class="podium-place third" id="podium-3"></div>
+    </div>
+</section>
 
-    <section class="leaderboard-section">
-        <h2 class="section-title">📊 Full Leaderboard</h2>
-        <table class="leaderboard-table">
-            <thead>
-                <tr>
-                    <th class="rank-cell">Rank</th>
-                    <th>Member Name</th>
-                    <th>Rank</th>
-                    <th>Hours This Week</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-body"></tbody>
-        </table>
-    </section>
+<section class="leaderboard-section">
+    <h2 class="section-title">📊 Full Leaderboard</h2>
+    <table class="leaderboard-table">
+        <thead>
+            <tr>
+                <th class="rank-cell">Rank</th>
+                <th>Member Name</th>
+                <th>Rank</th>
+                <th>Hours This Week</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboard-body"></tbody>
+    </table>
+</section>
 </div>
 
 <footer>
-    <p>&copy; 2026 2100 Gang | Hours tracked weekly | Prizes distributed every Sunday</p>
+<p>&copy; 2026 2100 Gang | Hours tracked weekly | Prizes distributed every Sunday</p>
 </footer>
 
 <script>
-const CSV_URL = "./statbot.csv"; // Update if hosted elsewhere
+const CSV_URL = "./statbot.csv"; // Your CSV path
 
 function parseCSV(csv) {
     const lines = csv.trim().split("\n");
     const headers = lines.shift().split(",").map(h => h.trim());
     return lines.map(line => {
-        const values = line.split(",");
+        const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // handle commas in quotes
         return headers.reduce((obj, header, i) => {
-            obj[header] = values[i]?.trim();
+            obj[header] = values[i]?.replace(/^"|"$/g,'') || '';
             return obj;
         }, {});
     });
 }
 
 function displayLeaderboard(data) {
-    // Sort by Voice Minutes / Hours
-    const sorted = data.sort((a,b) => Number(b["Voice Minutes"]||b["Voice (hours)"]||0) - Number(a["Voice Minutes"]||a["Voice (hours)"]||0));
-    
+    const sorted = data.sort((a,b)=>Number(b.count||0) - Number(a.count||0));
+
     // Stats bar
     const totalMembers = sorted.length;
-    const totalHours = sorted.reduce((sum,u)=>sum + Number(u["Voice Minutes"]||u["Voice (hours)"]||0),0);
+    const totalHours = sorted.reduce((sum,u)=>sum + Number(u.count||0),0);
     document.getElementById("total-members").innerText = totalMembers;
-    document.getElementById("total-hours").innerText = totalHours;
-    document.getElementById("avg-hours").innerText = (totalHours/totalMembers).toFixed(1);
+    document.getElementById("total-hours").innerText = totalHours.toFixed(2);
+    document.getElementById("avg-hours").innerText = (totalHours/totalMembers).toFixed(2);
 
     // Podium
     const podiumIds = ["podium-1","podium-2","podium-3"];
     for(let i=0;i<3;i++){
         const user = sorted[i];
         if(!user) continue;
-        const hours = user["Voice Minutes"] || user["Voice (hours)"] || 0;
-        const rankBadge = i+1;
+        const hours = Number(user.count).toFixed(2);
         document.getElementById(podiumIds[i]).innerHTML = `
-            <div class="rank-badge">${rankBadge}</div>
-            <div class="player-name">${user.Username||user.User}</div>
+            <div class="rank-badge">${i+1}</div>
+            <div class="player-name">${user.username}</div>
             <div class="player-hours">${hours}</div>
             <div class="hours-label">Hours This Week</div>
         `;
@@ -156,13 +154,12 @@ function displayLeaderboard(data) {
     const tbody = document.getElementById("leaderboard-body");
     tbody.innerHTML = "";
     sorted.forEach((u,i)=>{
-        const hours = u["Voice Minutes"] || u["Voice (hours)"] || 0;
         tbody.innerHTML += `
         <tr>
             <td class="rank-cell">${i+1}</td>
-            <td class="name-cell">${u.Username||u.User}</td>
-            <td>${u.Rank||"Member"}</td>
-            <td class="hours-cell">${hours} hrs</td>
+            <td class="name-cell">${u.username}</td>
+            <td>Member</td>
+            <td class="hours-cell">${Number(u.count).toFixed(2)} hrs</td>
             <td style="color:#00ff00;">● Active</td>
         </tr>
         `;
@@ -178,5 +175,6 @@ fetch(CSV_URL)
     })
     .catch(err=>console.error("Failed to load CSV",err));
 </script>
+
 </body>
 </html>
