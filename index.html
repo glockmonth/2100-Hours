@@ -5,166 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2100 Hours Leaderboard | PSRP</title>
 <style>
-:root {
-  --blood-red: #d41f1f;
-  --neon-red: #ff0000;
-  --gold: #ffd700;
-  --silver: #c0c0c0;
-  --bronze: #cd7f32;
-  --dark-bg: #0a0a0a;
-  --charcoal: #1a1a1a;
-  --light-gray: #cccccc;
-  --hover-glow: 0 0 20px rgba(212, 31, 31, 0.6);
-}
-
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, var(--dark-bg) 0%, #000000 100%);
-  color: var(--light-gray);
-  margin: 0;
-  padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #0a0a0a;
+    color: #fff;
+    margin: 0;
+    padding: 0;
 }
-
-header {
-  text-align: center;
-  padding: 2rem;
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
 }
-
-.logo { font-size: 3rem; font-weight: bold; color: var(--gold);}
-.subtitle { font-size: 1.2rem; color: var(--light-gray); }
-
-.container { max-width: 1200px; margin: auto; padding: 1rem; }
-
-.stats-bar {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 2rem;
+h1 {
+    text-align: center;
 }
-.stat-card {
-  background: var(--charcoal);
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  text-align: center;
-  flex: 1;
-  margin: 0 0.5rem;
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
 }
-.stat-value { font-size: 2rem; font-weight: bold; color: var(--gold);}
-.stat-label { font-size: 1rem; color: var(--light-gray); }
-
-.podium-section { text-align: center; margin-bottom: 2rem; }
-.podium { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; }
-.podium-place {
-  background: var(--charcoal);
-  padding: 1rem;
-  border-radius: 12px;
-  width: 150px;
-  text-align: center;
+.stat {
+    background-color: #1a1a1a;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-align: center;
 }
-.rank-badge { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; }
-.player-name { font-weight: bold; margin-bottom: 0.5rem; }
-.player-hours { font-size: 1.2rem; color: var(--gold); margin-bottom: 0.3rem;}
-.hours-label { font-size: 0.9rem; color: var(--light-gray); }
-
-.leaderboard-section { margin-top: 2rem; }
-.leaderboard-table { width: 100%; border-collapse: collapse; }
-.leaderboard-table th, .leaderboard-table td { padding: 0.8rem; text-align: left; border-bottom: 1px solid #333; }
-.leaderboard-table th { background: var(--charcoal); }
-.rank-cell { width: 50px; text-align: center; }
-.hours-cell { text-align: right; }
-
-footer { text-align: center; padding: 1rem; margin-top: 2rem; color: var(--light-gray); font-size: 0.9rem; }
+.stat h2 { margin: 0; font-size: 24px; }
+.stat p { margin: 0; font-size: 14px; color: #aaa; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1a1a1a;
+}
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+}
+th {
+    background-color: #111;
+}
+td.hours {
+    text-align: right;
+}
+td.rank {
+    text-align: center;
+}
 </style>
 </head>
 <body>
-<header>
-    <div class="header-content">
-        <div class="logo">2100</div>
-        <div class="subtitle">Weekly Hours Leaderboard</div>
-    </div>
-</header>
-
 <div class="container">
-    <div class="stats-bar">
-        <div class="stat-card">
-            <div class="stat-value" id="total-members">0</div>
-            <div class="stat-label">Total Members</div>
+    <h1>2100 Hours Leaderboard</h1>
+    <div class="stats">
+        <div class="stat">
+            <h2 id="total-members">0</h2>
+            <p>Total Members</p>
         </div>
-        <div class="stat-card">
-            <div class="stat-value" id="total-hours">0</div>
-            <div class="stat-label">Total Hours This Week</div>
+        <div class="stat">
+            <h2 id="total-hours">0</h2>
+            <p>Total Hours</p>
         </div>
-        <div class="stat-card">
-            <div class="stat-value" id="avg-hours">0</div>
-            <div class="stat-label">Average Hours/Member</div>
+        <div class="stat">
+            <h2 id="avg-hours">NaN</h2>
+            <p>Average Hours</p>
         </div>
     </div>
 
-    <section class="podium-section">
-        <h2 class="section-title">🏆 Top Performers</h2>
-        <div class="podium">
-            <div class="podium-place first">
-                <div class="rank-badge">1</div>
-                <div class="player-name" id="top1-name">-</div>
-                <div class="player-hours" id="top1-hours">0</div>
-                <div class="hours-label">Hours This Week</div>
-            </div>
-            <div class="podium-place second">
-                <div class="rank-badge">2</div>
-                <div class="player-name" id="top2-name">-</div>
-                <div class="player-hours" id="top2-hours">0</div>
-                <div class="hours-label">Hours This Week</div>
-            </div>
-            <div class="podium-place third">
-                <div class="rank-badge">3</div>
-                <div class="player-name" id="top3-name">-</div>
-                <div class="player-hours" id="top3-hours">0</div>
-                <div class="hours-label">Hours This Week</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="leaderboard-section">
-        <h2 class="section-title">📊 Full Leaderboard</h2>
-        <table class="leaderboard-table">
-            <thead>
-                <tr>
-                    <th class="rank-cell">Rank</th>
-                    <th>Member Name</th>
-                    <th>Rank</th>
-                    <th>Hours This Week</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-body">
-                <!-- Rows injected here -->
-            </tbody>
-        </table>
-    </section>
+    <table>
+        <thead>
+            <tr>
+                <th class="rank">Rank</th>
+                <th>Member Name</th>
+                <th>Rank</th>
+                <th>Hours This Week</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+            <!-- Data injected here -->
+        </tbody>
+    </table>
 </div>
 
-<footer>
-    <p>&copy; 2026 2100 Gang | Hours tracked weekly | Prizes distributed every Sunday</p>
-</footer>
-
 <script>
-// ===== CSV SETTINGS =====
-const CSV_URL = './statbot.csv'; // your CSV in repo root
+const CSV_URL = './statbot.csv'; // update with your CSV path
 
 async function loadCSV() {
     const res = await fetch(CSV_URL);
     const text = await res.text();
     const rows = text.split('\n');
 
-    // skip first 4 header lines
+    // skip header lines (first 4 lines)
     const dataRows = rows.slice(4);
 
     const members = dataRows.map(row => {
+        // match rank,"username",id,hours
         const match = row.match(/^\d+,"?([^"]+)"?,\d+,(.+)$/);
-        if (!match) return null;
+        if(!match) return null;
+        let hours = parseFloat(match[2].trim());
+        if(isNaN(hours)) {
+            // fallback if CSV formatting is weird
+            hours = parseFloat(match[3].trim());
+        }
         return {
             username: match[1].trim(),
-            id: match[2].trim(),
-            hours: parseFloat(match[3])
+            hours: hours
         };
     }).filter(Boolean);
 
@@ -172,43 +117,31 @@ async function loadCSV() {
 }
 
 function renderLeaderboard(members) {
-    // Sort by hours descending
-    members.sort((a,b)=> b.hours - a.hours);
+    // Sort descending by hours
+    members.sort((a,b) => b.hours - a.hours);
 
     // Totals
-    const totalMembers = members.length;
-    const totalHours = members.reduce((acc, m) => acc + m.hours, 0);
-    const avgHours = totalHours / totalMembers;
-
-    document.getElementById('total-members').textContent = totalMembers;
+    document.getElementById('total-members').textContent = members.length;
+    const totalHours = members.reduce((sum,m) => sum + m.hours, 0);
     document.getElementById('total-hours').textContent = totalHours.toFixed(2);
-    document.getElementById('avg-hours').textContent = avgHours.toFixed(2);
-
-    // Top 3 podium
-    for(let i=0;i<3;i++){
-        const top = members[i];
-        if(!top) continue;
-        document.getElementById(`top${i+1}-name`).textContent = top.username;
-        document.getElementById(`top${i+1}-hours`).textContent = top.hours.toFixed(2);
-    }
+    document.getElementById('avg-hours').textContent = 'NaN'; // keep NaN for now
 
     // Full leaderboard
     const tbody = document.getElementById('leaderboard-body');
     tbody.innerHTML = '';
-    members.forEach((m,i)=>{
+    members.forEach((m,i) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="rank-cell">${i+1}</td>
+            <td class="rank">${i+1}</td>
             <td>${m.username}</td>
             <td>Member</td>
-            <td class="hours-cell">${m.hours.toFixed(2)} hrs</td>
+            <td class="hours">${m.hours.toFixed(2)}</td>
             <td style="color:#00ff00;">● Active</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// ===== INIT =====
 async function init() {
     const members = await loadCSV();
     renderLeaderboard(members);
