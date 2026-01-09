@@ -114,18 +114,36 @@ footer {background: var(--charcoal); text-align:center; padding:2rem; margin-top
 <script>
 const CSV_URL = "./statbot.csv"; // Your CSV path
 
+// Clean username function
+function cleanName(name) {
+    return name
+        .replace(/\$/g, 'S')         // Replace $ with S
+        .replace(/!/g, '')           // Remove !
+        .replace(/#/g, '')           // Remove #
+        .replace(/"/g, '')           // Remove quotes
+        .replace(/†/g, '')           // Remove weird symbols
+        .replace(/♰/g, '')           // Remove cross symbols
+        .replace(/\|/g, ' | ')       // Make spacing consistent for pipes
+        .replace(/\s+/g,' ')         // Remove extra spaces
+        .trim();
+}
+
+// Parse CSV
 function parseCSV(csv) {
     const lines = csv.trim().split("\n");
     const headers = lines.shift().split(",").map(h => h.trim());
     return lines.map(line => {
         const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // handle commas in quotes
-        return headers.reduce((obj, header, i) => {
+        const obj = headers.reduce((obj, header, i) => {
             obj[header] = values[i]?.replace(/^"|"$/g,'') || '';
             return obj;
         }, {});
+        obj.username = cleanName(obj.username);
+        return obj;
     });
 }
 
+// Display leaderboard
 function displayLeaderboard(data) {
     const sorted = data.sort((a,b)=>Number(b.count||0) - Number(a.count||0));
 
