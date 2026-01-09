@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2100 Hours Leaderboard | PSRP</title>
 <style>
-/* ================== KEEP ALL YOUR ORIGINAL STYLES ================== */
 * {margin:0; padding:0; box-sizing:border-box;}
 :root {
     --blood-red: #d41f1f; --neon-red: #ff0000; --gold: #ffd700;
@@ -114,24 +113,28 @@ footer {background: var(--charcoal); text-align:center; padding:2rem; margin-top
 <script>
 const CSV_URL = "./statbot.csv"; // Your CSV path
 
+// Parse CSV and clean counts
 function parseCSV(csv) {
     const lines = csv.trim().split("\n");
-    const headers = lines.shift().split(",").map(h => h.trim());
+    const headers = lines.shift().split(",").map(h=>h.trim());
     return lines.map(line => {
         const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // handle commas in quotes
-        return headers.reduce((obj, header, i) => {
-            obj[header] = values[i]?.replace(/^"|"$/g,'') || '';
-            return obj;
-        }, {});
+        const obj = headers.reduce((acc,h,i) => {
+            acc[h] = (values[i] || '').replace(/^"|"$/g,'');
+            return acc;
+        },{});
+        // Clean the count to prevent NaN
+        obj.count = parseFloat(obj.count.replace(/[^0-9.]/g,'')) || 0;
+        return obj;
     });
 }
 
 function displayLeaderboard(data) {
-    const sorted = data.sort((a,b)=>Number(b.count||0) - Number(a.count||0));
+    const sorted = data.sort((a,b)=>b.count - a.count);
 
     // Stats bar
     const totalMembers = sorted.length;
-    const totalHours = sorted.reduce((sum,u)=>sum + Number(u.count||0),0);
+    const totalHours = sorted.reduce((sum,u)=>sum + Number(u.count),0);
     document.getElementById("total-members").innerText = totalMembers;
     document.getElementById("total-hours").innerText = totalHours.toFixed(2);
     document.getElementById("avg-hours").innerText = (totalHours/totalMembers).toFixed(2);
