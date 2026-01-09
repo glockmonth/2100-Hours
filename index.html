@@ -1,69 +1,315 @@
-<script>
-const CSV_URL = './statbot.csv'; // Path to your CSV
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2100 Hours Leaderboard | PSRP</title>
+<style>
+/* ============================================ GLOBAL STYLES & RESET ============================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --blood-red: #d41f1f;
+    --neon-red: #ff0000;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+    --dark-bg: #0a0a0a;
+    --charcoal: #1a1a1a;
+    --light-gray: #cccccc;
+    --hover-glow: 0 0 20px rgba(212, 31, 31, 0.6);
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, #000000 100%);
+    color: var(--light-gray);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
 
-// Load and parse CSV
+/* ============================================ HEADER ============================================ */
+header {
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1.5rem 0;
+    border-bottom: 2px solid var(--blood-red);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+}
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+.logo {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--blood-red);
+    text-shadow: 0 0 20px var(--neon-red);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+.subtitle {
+    font-size: 1.2rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+/* ============================================ MAIN CONTAINER ============================================ */
+.container { max-width: 1400px; margin: 3rem auto; padding: 0 2rem; }
+
+/* ============================================ STATS OVERVIEW BAR ============================================ */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+.stat-card {
+    background: linear-gradient(135deg, var(--charcoal) 0%, #0f0f0f 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 4px;
+    background: linear-gradient(90deg, var(--blood-red), var(--neon-red));
+}
+.stat-card:hover { border-color: var(--blood-red); box-shadow: var(--hover-glow); transform: translateY(-5px); }
+.stat-value { font-size: 3rem; font-weight: 900; color: var(--blood-red); text-shadow: 0 0 10px var(--neon-red); }
+.stat-label { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.5rem; }
+
+/* ============================================ TOP 3 PODIUM SECTION ============================================ */
+.podium-section { margin-bottom: 4rem; }
+.section-title { font-size: 2.5rem; font-weight: 900; color: var(--blood-red); text-transform: uppercase; margin-bottom: 2rem; text-align: center; text-shadow: 0 0 15px var(--neon-red); letter-spacing: 0.05em; }
+.podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: flex-end; max-width: 1000px; margin: 0 auto; padding: 2rem 0; }
+.podium-place:nth-child(1) { order: 2; } 
+.podium-place:nth-child(2) { order: 1; }
+.podium-place:nth-child(3) { order: 3; }
+.podium-place { background: linear-gradient(135deg, var(--charcoal) 0%, #0f0f0f 100%); border-radius: 16px; padding: 2rem; text-align: center; position: relative; transition: all 0.3s ease; border: 3px solid transparent; }
+.podium-place.first { border-color: var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); min-height: 400px; }
+.podium-place.first:hover { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5); transform: scale(1.05); }
+.podium-place.second { border-color: var(--silver); box-shadow: 0 0 20px rgba(192, 192, 192, 0.2); min-height: 350px; }
+.podium-place.second:hover { box-shadow: 0 0 30px rgba(192, 192, 192, 0.4); transform: scale(1.05); }
+.podium-place.third { border-color: var(--bronze); box-shadow: 0 0 20px rgba(205, 127, 50, 0.2); min-height: 300px; }
+.podium-place.third:hover { box-shadow: 0 0 30px rgba(205, 127, 50, 0.4); transform: scale(1.05); }
+.rank-badge { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; position: relative; }
+.first .rank-badge::before { content: '👑'; position: absolute; top: -30px; font-size: 2rem; }
+.player-name { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+.player-hours { font-size: 3rem; font-weight: 900; margin: 1rem 0; }
+.first .player-hours { color: var(--gold); text-shadow: 0 0 20px var(--gold); }
+.second .player-hours { color: var(--silver); text-shadow: 0 0 15px var(--silver); }
+.third .player-hours { color: var(--bronze); text-shadow: 0 0 15px var(--bronze); }
+.hours-label { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; }
+.prize { margin-top: 1.5rem; padding: 1rem; background: rgba(0, 0, 0, 0.5); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); }
+.prize-label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+.prize-value { font-size: 1.3rem; font-weight: 700; }
+.first .prize-value { color: var(--gold); }
+.second .prize-value { color: var(--silver); }
+.third .prize-value { color: var(--bronze); }
+
+/* ============================================ FULL LEADERBOARD TABLE ============================================ */
+.leaderboard-section { margin-top: 4rem; }
+.leaderboard-table { width: 100%; border-collapse: collapse; background: var(--charcoal); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); }
+.leaderboard-table thead { background: linear-gradient(90deg, var(--blood-red), #a01515); }
+.leaderboard-table th { padding: 1.5rem; text-align: left; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #fff; font-size: 0.9rem; }
+.leaderboard-table td { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #bbb; }
+.leaderboard-table tbody tr { transition: all 0.3s ease; }
+.leaderboard-table tbody tr:hover { background: rgba(212, 31, 31, 0.1); transform: scale(1.01); }
+.rank-cell { font-weight: 900; font-size: 1.3rem; color: var(--blood-red); width: 80px; text-align: center; }
+.name-cell { font-weight: 600; font-size: 1.1rem; color: #fff; }
+.hours-cell { font-weight: 700; font-size: 1.2rem; color: var(--blood-red); font-family: 'Courier New', monospace; }
+
+/* ============================================ FOOTER ============================================ */
+footer { background: var(--charcoal); text-align: center; padding: 2rem; margin-top: 4rem; border-top: 2px solid var(--blood-red); }
+footer p { color: #666; font-size: 0.9rem; }
+
+/* ============================================ RESPONSIVE DESIGN ============================================ */
+@media (max-width: 968px) {
+    .podium { grid-template-columns: 1fr; gap: 1.5rem; }
+    .podium-place:nth-child(1) { order: 1; }
+    .podium-place:nth-child(2) { order: 2; }
+    .podium-place:nth-child(3) { order: 3; }
+    .podium-place.first, .podium-place.second, .podium-place.third { min-height: auto; }
+    .stats-bar { grid-template-columns: 1fr; }
+    .leaderboard-table { font-size: 0.85rem; }
+    .leaderboard-table th, .leaderboard-table td { padding: 0.8rem; }
+    .section-title { font-size: 2rem; }
+}
+@media (max-width: 640px) {
+    .logo { font-size: 2rem; }
+    .subtitle { font-size: 0.9rem; }
+    .stat-value { font-size: 2rem; }
+    .player-hours { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================ HEADER ============================================ -->
+<header>
+    <div class="header-content">
+        <div class="logo">2100</div>
+        <div class="subtitle">Weekly Hours Leaderboard</div>
+    </div>
+</header>
+
+<!-- ============================================ MAIN CONTAINER ============================================ -->
+<div class="container">
+
+    <!-- Stats Overview Bar -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-value" id="total-members">0</div>
+            <div class="stat-label">Total Members</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="total-hours">0</div>
+            <div class="stat-label">Total Hours This Week</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="avg-hours">0</div>
+            <div class="stat-label">Average Hours/Member</div>
+        </div>
+    </div>
+
+    <!-- ============================================ TOP 3 PODIUM ============================================ -->
+    <section class="podium-section">
+        <h2 class="section-title">🏆 Top Performers</h2>
+        <div class="podium">
+            <div class="podium-place first">
+                <div class="rank-badge">1</div>
+                <div class="player-name">Loading...</div>
+                <div class="player-hours">0</div>
+                <div class="hours-label">Hours This Week</div>
+                <div class="prize">
+                    <div class="prize-label">Prize</div>
+                    <div class="prize-value">TBD</div>
+                </div>
+            </div>
+            <div class="podium-place second">
+                <div class="rank-badge">2</div>
+                <div class="player-name">Loading...</div>
+                <div class="player-hours">0</div>
+                <div class="hours-label">Hours This Week</div>
+                <div class="prize">
+                    <div class="prize-label">Prize</div>
+                    <div class="prize-value">TBD</div>
+                </div>
+            </div>
+            <div class="podium-place third">
+                <div class="rank-badge">3</div>
+                <div class="player-name">Loading...</div>
+                <div class="player-hours">0</div>
+                <div class="hours-label">Hours This Week</div>
+                <div class="prize">
+                    <div class="prize-label">Prize</div>
+                    <div class="prize-value">TBD</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ FULL LEADERBOARD TABLE ============================================ -->
+    <section class="leaderboard-section">
+        <h2 class="section-title">📊 Full Leaderboard</h2>
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th class="rank-cell">Rank</th>
+                    <th>Member Name</th>
+                    <th>Rank</th>
+                    <th>Hours This Week</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- Rows populated dynamically -->
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<!-- ============================================ FOOTER ============================================ -->
+<footer>
+    <p>&copy; 2026 2100 Gang | Hours tracked weekly | Prizes distributed every Sunday</p>
+</footer>
+
+<!-- ============================================ DYNAMIC JS ============================================ -->
+<script>
+const CSV_URL = './statbot.csv'; // Make sure your CSV is in the same folder
+
 async function loadCSV() {
     const res = await fetch(CSV_URL);
     const text = await res.text();
     const rows = text.split('\n').slice(1); // skip header
-
     const members = rows.map(row => {
         if (!row.trim()) return null;
-        // Regex to split CSV correctly even if username has quotes/commas
         const cols = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
         if (!cols || cols.length < 4) return null;
-        const username = cols[1].replace(/^"|"$/g, '').trim();
-        let hours = parseFloat(cols[3]);
+        const name = cols[0].replace(/^"|"$/g,'').trim();
+        const rank = cols[1].replace(/^"|"$/g,'').trim();
+        let hours = parseFloat(cols[2]);
         if (isNaN(hours)) hours = 0;
-        hours = Math.round(hours * 100) / 100; // round to 2 decimals
-        return { username, hours };
+        const status = cols[3].replace(/^"|"$/g,'').trim();
+        return { name, rank, hours, status };
     }).filter(Boolean);
 
     return members;
 }
 
-// Populate leaderboard
 function renderLeaderboard(members) {
     // Sort descending by hours
     members.sort((a,b) => b.hours - a.hours);
 
     // Update stats
     document.getElementById('total-members').textContent = members.length;
-    const totalHours = members.reduce((sum, m) => sum + m.hours, 0);
-    document.getElementById('total-hours').textContent = totalHours.toFixed(2);
-    document.getElementById('avg-hours').textContent = 'NaN'; // keep as NaN for now
+    const totalHours = members.reduce((sum,m)=>sum+m.hours,0);
+    document.getElementById('total-hours').textContent = totalHours.toFixed(1);
+    const avg = members.length ? (totalHours/members.length).toFixed(1) : 0;
+    document.getElementById('avg-hours').textContent = avg;
 
     // Update podium top 3
     const podiumSelectors = ['.podium-place.first', '.podium-place.second', '.podium-place.third'];
     podiumSelectors.forEach((selector, i) => {
         const el = document.querySelector(selector);
-        if (!el) return;
-        if (!members[i]) return;
-        el.querySelector('.player-name').textContent = members[i].username;
+        if (!el || !members[i]) return;
+        el.querySelector('.player-name').textContent = members[i].name;
         el.querySelector('.player-hours').textContent = members[i].hours;
+        el.querySelector('.prize-value').textContent = 'TBD';
     });
 
     // Update full leaderboard table
     const tbody = document.getElementById('leaderboard-body');
     tbody.innerHTML = '';
-    members.forEach((m, i) => {
+    members.forEach((m,i)=>{
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="rank-cell">${i + 1}</td>
-            <td class="name-cell">${m.username}</td>
-            <td>Member</td>
+            <td class="rank-cell">${i+1}</td>
+            <td class="name-cell">${m.name}</td>
+            <td>${m.rank}</td>
             <td class="hours-cell">${m.hours} hrs</td>
-            <td style="color:#00ff00;">● Active</td>
+            <td style="color:${m.status==='Active'?'#00ff00':m.status==='Idle'?'#ffaa00':'#ff0000'}">● ${m.status}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
 // Init
-async function initLeaderboard() {
+async function init() {
     const members = await loadCSV();
     renderLeaderboard(members);
 }
 
-initLeaderboard();
+init();
 </script>
+</body>
+</html>
