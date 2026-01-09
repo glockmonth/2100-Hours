@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2100 Hours Leaderboard | PSRP</title>
 <style>
-/* ============================================ GLOBAL STYLES & RESET ============================================ */
+/* ============================================ GLOBAL STYLES ============================================ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
     --blood-red: #d41f1f;
@@ -57,7 +57,11 @@ header {
 }
 
 /* ============================================ MAIN CONTAINER ============================================ */
-.container { max-width: 1400px; margin: 3rem auto; padding: 0 2rem; }
+.container {
+    max-width: 1400px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+}
 
 /* ============================================ STATS OVERVIEW BAR ============================================ */
 .stats-bar {
@@ -79,51 +83,98 @@ header {
 .stat-card::before {
     content: '';
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 4px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
     background: linear-gradient(90deg, var(--blood-red), var(--neon-red));
 }
-.stat-card:hover { border-color: var(--blood-red); box-shadow: var(--hover-glow); transform: translateY(-5px); }
-.stat-value { font-size: 3rem; font-weight: 900; color: var(--blood-red); text-shadow: 0 0 10px var(--neon-red); }
-.stat-label { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.5rem; }
+.stat-card:hover {
+    border-color: var(--blood-red);
+    box-shadow: var(--hover-glow);
+    transform: translateY(-5px);
+}
+.stat-value {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--blood-red);
+    text-shadow: 0 0 10px var(--neon-red);
+}
+.stat-label {
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.5rem;
+}
 
-/* ============================================ TOP 3 PODIUM SECTION ============================================ */
+/* ============================================ TOP 3 PODIUM ============================================ */
 .podium-section { margin-bottom: 4rem; }
-.section-title { font-size: 2.5rem; font-weight: 900; color: var(--blood-red); text-transform: uppercase; margin-bottom: 2rem; text-align: center; text-shadow: 0 0 15px var(--neon-red); letter-spacing: 0.05em; }
-.podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: flex-end; max-width: 1000px; margin: 0 auto; padding: 2rem 0; }
-.podium-place:nth-child(1) { order: 2; } 
-.podium-place:nth-child(2) { order: 1; }
-.podium-place:nth-child(3) { order: 3; }
-.podium-place { background: linear-gradient(135deg, var(--charcoal) 0%, #0f0f0f 100%); border-radius: 16px; padding: 2rem; text-align: center; position: relative; transition: all 0.3s ease; border: 3px solid transparent; }
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--blood-red);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    text-align: center;
+    text-shadow: 0 0 15px var(--neon-red);
+    letter-spacing: 0.05em;
+}
+.podium {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    align-items: flex-end;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+/* Reorder for visual podium effect: 2nd, 1st, 3rd */
+.podium-place:nth-child(1) { order: 2; } /* 1st place in center */
+.podium-place:nth-child(2) { order: 1; } /* 2nd place on left */
+.podium-place:nth-child(3) { order: 3; } /* 3rd place on right */
+
+.podium-place {
+    background: linear-gradient(135deg, var(--charcoal) 0%, #0f0f0f 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
 .podium-place.first { border-color: var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); min-height: 400px; }
-.podium-place.first:hover { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5); transform: scale(1.05); }
 .podium-place.second { border-color: var(--silver); box-shadow: 0 0 20px rgba(192, 192, 192, 0.2); min-height: 350px; }
-.podium-place.second:hover { box-shadow: 0 0 30px rgba(192, 192, 192, 0.4); transform: scale(1.05); }
 .podium-place.third { border-color: var(--bronze); box-shadow: 0 0 20px rgba(205, 127, 50, 0.2); min-height: 300px; }
-.podium-place.third:hover { box-shadow: 0 0 30px rgba(205, 127, 50, 0.4); transform: scale(1.05); }
+
 .rank-badge { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; position: relative; }
+.first .rank-badge { background: linear-gradient(135deg, var(--gold), #ffed4e); color: #000; box-shadow: 0 0 20px var(--gold); }
+.second .rank-badge { background: linear-gradient(135deg, var(--silver), #e0e0e0); color: #000; box-shadow: 0 0 15px var(--silver); }
+.third .rank-badge { background: linear-gradient(135deg, var(--bronze), #e89b5a); color: #000; box-shadow: 0 0 15px var(--bronze); }
 .first .rank-badge::before { content: '👑'; position: absolute; top: -30px; font-size: 2rem; }
+
 .player-name { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
 .player-hours { font-size: 3rem; font-weight: 900; margin: 1rem 0; }
 .first .player-hours { color: var(--gold); text-shadow: 0 0 20px var(--gold); }
 .second .player-hours { color: var(--silver); text-shadow: 0 0 15px var(--silver); }
 .third .player-hours { color: var(--bronze); text-shadow: 0 0 15px var(--bronze); }
-.hours-label { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; }
-.prize { margin-top: 1.5rem; padding: 1rem; background: rgba(0, 0, 0, 0.5); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); }
-.prize-label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
-.prize-value { font-size: 1.3rem; font-weight: 700; }
-.first .prize-value { color: var(--gold); }
-.second .prize-value { color: var(--silver); }
-.third .prize-value { color: var(--bronze); }
 
 /* ============================================ FULL LEADERBOARD TABLE ============================================ */
 .leaderboard-section { margin-top: 4rem; }
-.leaderboard-table { width: 100%; border-collapse: collapse; background: var(--charcoal); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); }
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--charcoal);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
 .leaderboard-table thead { background: linear-gradient(90deg, var(--blood-red), #a01515); }
 .leaderboard-table th { padding: 1.5rem; text-align: left; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #fff; font-size: 0.9rem; }
 .leaderboard-table td { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #bbb; }
 .leaderboard-table tbody tr { transition: all 0.3s ease; }
 .leaderboard-table tbody tr:hover { background: rgba(212, 31, 31, 0.1); transform: scale(1.01); }
+
 .rank-cell { font-weight: 900; font-size: 1.3rem; color: var(--blood-red); width: 80px; text-align: center; }
 .name-cell { font-weight: 600; font-size: 1.1rem; color: #fff; }
 .hours-cell { font-weight: 700; font-size: 1.2rem; color: var(--blood-red); font-family: 'Courier New', monospace; }
@@ -154,7 +205,7 @@ footer p { color: #666; font-size: 0.9rem; }
 </head>
 <body>
 
-<!-- ============================================ HEADER ============================================ -->
+<!-- HEADER -->
 <header>
     <div class="header-content">
         <div class="logo">2100</div>
@@ -162,10 +213,10 @@ footer p { color: #666; font-size: 0.9rem; }
     </div>
 </header>
 
-<!-- ============================================ MAIN CONTAINER ============================================ -->
+<!-- MAIN -->
 <div class="container">
 
-    <!-- Stats Overview Bar -->
+    <!-- Stats -->
     <div class="stats-bar">
         <div class="stat-card">
             <div class="stat-value" id="total-members">0</div>
@@ -181,7 +232,7 @@ footer p { color: #666; font-size: 0.9rem; }
         </div>
     </div>
 
-    <!-- ============================================ TOP 3 PODIUM ============================================ -->
+    <!-- Top 3 Podium -->
     <section class="podium-section">
         <h2 class="section-title">🏆 Top Performers</h2>
         <div class="podium">
@@ -190,35 +241,23 @@ footer p { color: #666; font-size: 0.9rem; }
                 <div class="player-name">Loading...</div>
                 <div class="player-hours">0</div>
                 <div class="hours-label">Hours This Week</div>
-                <div class="prize">
-                    <div class="prize-label">Prize</div>
-                    <div class="prize-value">TBD</div>
-                </div>
             </div>
             <div class="podium-place second">
                 <div class="rank-badge">2</div>
                 <div class="player-name">Loading...</div>
                 <div class="player-hours">0</div>
                 <div class="hours-label">Hours This Week</div>
-                <div class="prize">
-                    <div class="prize-label">Prize</div>
-                    <div class="prize-value">TBD</div>
-                </div>
             </div>
             <div class="podium-place third">
                 <div class="rank-badge">3</div>
                 <div class="player-name">Loading...</div>
                 <div class="player-hours">0</div>
                 <div class="hours-label">Hours This Week</div>
-                <div class="prize">
-                    <div class="prize-label">Prize</div>
-                    <div class="prize-value">TBD</div>
-                </div>
             </div>
         </div>
     </section>
 
-    <!-- ============================================ FULL LEADERBOARD TABLE ============================================ -->
+    <!-- Full Leaderboard -->
     <section class="leaderboard-section">
         <h2 class="section-title">📊 Full Leaderboard</h2>
         <table class="leaderboard-table">
@@ -232,62 +271,71 @@ footer p { color: #666; font-size: 0.9rem; }
                 </tr>
             </thead>
             <tbody id="leaderboard-body">
-                <!-- Rows populated dynamically -->
+                <!-- Populated dynamically -->
             </tbody>
         </table>
     </section>
+
 </div>
 
-<!-- ============================================ FOOTER ============================================ -->
+<!-- FOOTER -->
 <footer>
     <p>&copy; 2026 2100 Gang | Hours tracked weekly | Prizes distributed every Sunday</p>
 </footer>
 
-<!-- ============================================ DYNAMIC JS ============================================ -->
+<!-- JAVASCRIPT -->
 <script>
-const CSV_URL = './statbot.csv'; // Make sure your CSV is in the same folder
+const CSV_URL = './statbot.csv';
 
+// Parse CSV and return members
 async function loadCSV() {
-    const res = await fetch(CSV_URL);
-    const text = await res.text();
-    const rows = text.split('\n').slice(1); // skip header
-    const members = rows.map(row => {
-        if (!row.trim()) return null;
-        const cols = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-        if (!cols || cols.length < 4) return null;
-        const name = cols[0].replace(/^"|"$/g,'').trim();
-        const rank = cols[1].replace(/^"|"$/g,'').trim();
-        let hours = parseFloat(cols[2]);
-        if (isNaN(hours)) hours = 0;
-        const status = cols[3].replace(/^"|"$/g,'').trim();
-        return { name, rank, hours, status };
-    }).filter(Boolean);
-
-    return members;
+    try {
+        const res = await fetch(CSV_URL);
+        const text = await res.text();
+        const rows = text.split('\n').slice(1);
+        const members = rows.map(row => {
+            if(!row.trim()) return null;
+            const cols = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+            if(!cols || cols.length < 4) return null;
+            const name = cols[1].replace(/^"|"$/g, '').trim();
+            const hours = parseFloat(cols[3]);
+            return { name, hours: isNaN(hours)?0:hours, rank:'Member', status:'Active' };
+        }).filter(Boolean);
+        return members;
+    } catch(err) {
+        console.error('CSV load error:', err);
+        return [];
+    }
 }
 
-function renderLeaderboard(members) {
-    // Sort descending by hours
-    members.sort((a,b) => b.hours - a.hours);
+function statusColor(status){
+    switch(status.toLowerCase()){
+        case 'active': return '#00ff00';
+        case 'idle': return '#ffaa00';
+        case 'offline': return '#ff0000';
+        default: return '#00ff00';
+    }
+}
 
-    // Update stats
+function renderLeaderboard(members){
+    members.sort((a,b)=>b.hours-a.hours);
+
+    // Stats
     document.getElementById('total-members').textContent = members.length;
     const totalHours = members.reduce((sum,m)=>sum+m.hours,0);
     document.getElementById('total-hours').textContent = totalHours.toFixed(1);
-    const avg = members.length ? (totalHours/members.length).toFixed(1) : 0;
-    document.getElementById('avg-hours').textContent = avg;
+    document.getElementById('avg-hours').textContent = (totalHours/members.length).toFixed(1);
 
-    // Update podium top 3
-    const podiumSelectors = ['.podium-place.first', '.podium-place.second', '.podium-place.third'];
-    podiumSelectors.forEach((selector, i) => {
-        const el = document.querySelector(selector);
-        if (!el || !members[i]) return;
+    // Podium
+    const podiumSelectors = ['.podium-place.first','.podium-place.second','.podium-place.third'];
+    podiumSelectors.forEach((sel,i)=>{
+        const el = document.querySelector(sel);
+        if(!el || !members[i]) return;
         el.querySelector('.player-name').textContent = members[i].name;
-        el.querySelector('.player-hours').textContent = members[i].hours;
-        el.querySelector('.prize-value').textContent = 'TBD';
+        el.querySelector('.player-hours').textContent = members[i].hours.toFixed(1);
     });
 
-    // Update full leaderboard table
+    // Full Table
     const tbody = document.getElementById('leaderboard-body');
     tbody.innerHTML = '';
     members.forEach((m,i)=>{
@@ -296,20 +344,21 @@ function renderLeaderboard(members) {
             <td class="rank-cell">${i+1}</td>
             <td class="name-cell">${m.name}</td>
             <td>${m.rank}</td>
-            <td class="hours-cell">${m.hours} hrs</td>
-            <td style="color:${m.status==='Active'?'#00ff00':m.status==='Idle'?'#ffaa00':'#ff0000'}">● ${m.status}</td>
+            <td class="hours-cell">${m.hours.toFixed(1)} hrs</td>
+            <td style="color:${statusColor(m.status)};">● ${m.status}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// Init
-async function init() {
+// Initialize
+async function initLeaderboard(){
     const members = await loadCSV();
     renderLeaderboard(members);
 }
 
-init();
+initLeaderboard();
 </script>
+
 </body>
 </html>
