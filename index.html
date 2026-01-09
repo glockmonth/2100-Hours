@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2100 Hours Leaderboard | PSRP</title>
 <style>
-/* ======= YOUR EXISTING STYLES HERE ======= */
 :root {
   --blood-red: #d41f1f;
   --neon-red: #ff0000;
@@ -22,14 +21,58 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, var(--dark-bg) 0%, #000000 100%);
   color: var(--light-gray);
-  line-height: 1.6;
-  overflow-x: hidden;
-  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-header { /* ... keep your existing header styles ... */ }
-.container { max-width: 1400px; margin: 3rem auto; padding: 0 2rem; }
-/* include all your existing CSS above */
+header {
+  text-align: center;
+  padding: 2rem;
+}
+
+.logo { font-size: 3rem; font-weight: bold; color: var(--gold);}
+.subtitle { font-size: 1.2rem; color: var(--light-gray); }
+
+.container { max-width: 1200px; margin: auto; padding: 1rem; }
+
+.stats-bar {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--charcoal);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  text-align: center;
+  flex: 1;
+  margin: 0 0.5rem;
+}
+.stat-value { font-size: 2rem; font-weight: bold; color: var(--gold);}
+.stat-label { font-size: 1rem; color: var(--light-gray); }
+
+.podium-section { text-align: center; margin-bottom: 2rem; }
+.podium { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; }
+.podium-place {
+  background: var(--charcoal);
+  padding: 1rem;
+  border-radius: 12px;
+  width: 150px;
+  text-align: center;
+}
+.rank-badge { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; }
+.player-name { font-weight: bold; margin-bottom: 0.5rem; }
+.player-hours { font-size: 1.2rem; color: var(--gold); margin-bottom: 0.3rem;}
+.hours-label { font-size: 0.9rem; color: var(--light-gray); }
+
+.leaderboard-section { margin-top: 2rem; }
+.leaderboard-table { width: 100%; border-collapse: collapse; }
+.leaderboard-table th, .leaderboard-table td { padding: 0.8rem; text-align: left; border-bottom: 1px solid #333; }
+.leaderboard-table th { background: var(--charcoal); }
+.rank-cell { width: 50px; text-align: center; }
+.hours-cell { text-align: right; }
+
+footer { text-align: center; padding: 1rem; margin-top: 2rem; color: var(--light-gray); font-size: 0.9rem; }
 </style>
 </head>
 <body>
@@ -93,7 +136,7 @@ header { /* ... keep your existing header styles ... */ }
                 </tr>
             </thead>
             <tbody id="leaderboard-body">
-                <!-- Rows will be injected here -->
+                <!-- Rows injected here -->
             </tbody>
         </table>
     </section>
@@ -105,15 +148,14 @@ header { /* ... keep your existing header styles ... */ }
 
 <script>
 // ===== CSV SETTINGS =====
-const CSV_URL = './statbot.csv'; // put your CSV in the repo root
+const CSV_URL = './statbot.csv'; // your CSV in repo root
 
-// ===== PARSE CSV =====
 async function loadCSV() {
     const res = await fetch(CSV_URL);
     const text = await res.text();
     const rows = text.split('\n');
 
-    // Skip the first 4 lines of your CSV (headers)
+    // skip first 4 header lines
     const dataRows = rows.slice(4);
 
     const members = dataRows.map(row => {
@@ -129,38 +171,37 @@ async function loadCSV() {
     return members;
 }
 
-// ===== RENDER LEADERBOARD =====
 function renderLeaderboard(members) {
     // Sort by hours descending
     members.sort((a,b)=> b.hours - a.hours);
 
-    // Total members & hours
+    // Totals
     const totalMembers = members.length;
     const totalHours = members.reduce((acc, m) => acc + m.hours, 0);
-    const avgHours = (totalHours / totalMembers).toFixed(1);
+    const avgHours = totalHours / totalMembers;
 
     document.getElementById('total-members').textContent = totalMembers;
-    document.getElementById('total-hours').textContent = totalHours.toFixed(1);
-    document.getElementById('avg-hours').textContent = avgHours;
+    document.getElementById('total-hours').textContent = totalHours.toFixed(2);
+    document.getElementById('avg-hours').textContent = avgHours.toFixed(2);
 
     // Top 3 podium
     for(let i=0;i<3;i++){
         const top = members[i];
         if(!top) continue;
         document.getElementById(`top${i+1}-name`).textContent = top.username;
-        document.getElementById(`top${i+1}-hours`).textContent = top.hours.toFixed(1);
+        document.getElementById(`top${i+1}-hours`).textContent = top.hours.toFixed(2);
     }
 
-    // Full leaderboard table
+    // Full leaderboard
     const tbody = document.getElementById('leaderboard-body');
     tbody.innerHTML = '';
     members.forEach((m,i)=>{
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="rank-cell">${i+1}</td>
-            <td class="name-cell">${m.username}</td>
+            <td>${m.username}</td>
             <td>Member</td>
-            <td class="hours-cell">${m.hours.toFixed(1)} hrs</td>
+            <td class="hours-cell">${m.hours.toFixed(2)} hrs</td>
             <td style="color:#00ff00;">● Active</td>
         `;
         tbody.appendChild(tr);
