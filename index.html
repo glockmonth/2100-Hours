@@ -111,30 +111,41 @@ footer {background: var(--charcoal); text-align:center; padding:2rem; margin-top
 </footer>
 
 <script>
-const CSV_URL = "./statbot.csv"; // Your CSV path
+const CSV_URL = "./statbot.csv"; // Update to your CSV path
 
-// Parse CSV and clean counts
+// Parse CSV
 function parseCSV(csv) {
     const lines = csv.trim().split("\n");
     const headers = lines.shift().split(",").map(h=>h.trim());
-    return lines.map(line => {
-        const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // handle commas in quotes
-        const obj = headers.reduce((acc,h,i) => {
-            acc[h] = (values[i] || '').replace(/^"|"$/g,'');
+    let data = lines.map(line=>{
+        const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        let obj = headers.reduce((acc,h,i)=>{
+            acc[h] = (values[i]||'').replace(/^"|"$/g,'');
             return acc;
         },{});
-        // Clean the count to prevent NaN
         obj.count = parseFloat(obj.count.replace(/[^0-9.]/g,'')) || 0;
         return obj;
     });
+
+    // Combine duplicates by username
+    const combined = {};
+    data.forEach(u=>{
+        if(combined[u.username]){
+            combined[u.username].count += u.count;
+        } else {
+            combined[u.username] = {...u};
+        }
+    });
+
+    return Object.values(combined);
 }
 
-function displayLeaderboard(data) {
+function displayLeaderboard(data){
     const sorted = data.sort((a,b)=>b.count - a.count);
 
     // Stats bar
     const totalMembers = sorted.length;
-    const totalHours = sorted.reduce((sum,u)=>sum + Number(u.count),0);
+    const totalHours = sorted.reduce((sum,u)=>sum+u.count,0);
     document.getElementById("total-members").innerText = totalMembers;
     document.getElementById("total-hours").innerText = totalHours.toFixed(2);
     document.getElementById("avg-hours").innerText = (totalHours/totalMembers).toFixed(2);
@@ -144,7 +155,7 @@ function displayLeaderboard(data) {
     for(let i=0;i<3;i++){
         const user = sorted[i];
         if(!user) continue;
-        const hours = Number(user.count).toFixed(2);
+        const hours = user.count.toFixed(2);
         document.getElementById(podiumIds[i]).innerHTML = `
             <div class="rank-badge">${i+1}</div>
             <div class="player-name">${user.username}</div>
@@ -153,7 +164,7 @@ function displayLeaderboard(data) {
         `;
     }
 
-    // Full table
+    // Full leaderboard
     const tbody = document.getElementById("leaderboard-body");
     tbody.innerHTML = "";
     sorted.forEach((u,i)=>{
@@ -162,7 +173,7 @@ function displayLeaderboard(data) {
             <td class="rank-cell">${i+1}</td>
             <td class="name-cell">${u.username}</td>
             <td>Member</td>
-            <td class="hours-cell">${Number(u.count).toFixed(2)} hrs</td>
+            <td class="hours-cell">${u.count.toFixed(2)} hrs</td>
             <td style="color:#00ff00;">● Active</td>
         </tr>
         `;
@@ -171,12 +182,12 @@ function displayLeaderboard(data) {
 
 // Fetch CSV
 fetch(CSV_URL)
-    .then(res => res.text())
-    .then(csv=>{
-        const data = parseCSV(csv);
-        displayLeaderboard(data);
-    })
-    .catch(err=>console.error("Failed to load CSV",err));
+.then(res=>res.text())
+.then(csv=>{
+    const data = parseCSV(csv);
+    displayLeaderboard(data);
+})
+.catch(err=>console.error("Failed to load CSV",err));
 </script>
 
 </body>
