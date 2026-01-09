@@ -1,151 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2100 Hours Leaderboard | PSRP</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #0a0a0a;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-}
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-}
-h1 {
-    text-align: center;
-}
-.stats {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-.stat {
-    background-color: #1a1a1a;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-align: center;
-}
-.stat h2 { margin: 0; font-size: 24px; }
-.stat p { margin: 0; font-size: 14px; color: #aaa; }
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #1a1a1a;
-}
-th, td {
-    padding: 10px;
-    border-bottom: 1px solid #333;
-}
-th {
-    background-color: #111;
-}
-td.hours {
-    text-align: right;
-}
-td.rank {
-    text-align: center;
-}
-</style>
-</head>
-<body>
-<div class="container">
-    <h1>2100 Hours Leaderboard</h1>
-    <div class="stats">
-        <div class="stat">
-            <h2 id="total-members">0</h2>
-            <p>Total Members</p>
-        </div>
-        <div class="stat">
-            <h2 id="total-hours">0</h2>
-            <p>Total Hours</p>
-        </div>
-        <div class="stat">
-            <h2 id="avg-hours">NaN</h2>
-            <p>Average Hours</p>
-        </div>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th class="rank">Rank</th>
-                <th>Member Name</th>
-                <th>Rank</th>
-                <th>Hours This Week</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="leaderboard-body">
-            <!-- Data injected here -->
-        </tbody>
-    </table>
-</div>
-
-<script>
-const CSV_URL = './statbot.csv'; // replace with your CSV file path
-
-async function loadCSV() {
-    const res = await fetch(CSV_URL);
-    const text = await res.text();
-    const rows = text.split('\n');
-
-    // Skip header lines (first 4 lines)
-    const dataRows = rows.slice(4);
-
-    const members = dataRows.map(row => {
-        if (!row.trim()) return null;
-        // Split CSV but keep quoted commas inside quotes
-        const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-        if (!cols || cols.length < 4) return null;
-
-        const username = cols[1].replace(/^"|"$/g, '').trim();
-        let hours = parseFloat(cols[3]);
-        if (isNaN(hours)) hours = 0;
-
-        return { username, hours };
-    }).filter(Boolean);
-
-    return members;
-}
-
-function renderLeaderboard(members) {
-    // Sort descending by hours
-    members.sort((a,b) => b.hours - a.hours);
-
-    // Stats
-    document.getElementById('total-members').textContent = members.length;
-    const totalHours = members.reduce((sum, m) => sum + m.hours, 0);
-    document.getElementById('total-hours').textContent = totalHours.toFixed(2);
-    document.getElementById('avg-hours').textContent = 'NaN'; // keep NaN for now
-
-    // Render full leaderboard
-    const tbody = document.getElementById('leaderboard-body');
-    tbody.innerHTML = '';
-    members.forEach((m,i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="rank">${i+1}</td>
-            <td>${m.username}</td>
-            <td>Member</td>
-            <td class="hours">${m.hours.toFixed(2)}</td>
-            <td style="color:#00ff00;">● Active</td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-async function init() {
-    const members = await loadCSV();
-    renderLeaderboard(members);
-}
-
-init();
-</script>
-</body>
-</html>
+rank
+username
+id
+count
+1,"toska",1216235037473898567,40.46999999999998
+2,"# 2100 | Ace ( Lil Play)",808476868536958986,29.710000000000004
+3,"# 2100 | Grayson",1313698976100519938,26.469999999999995
+4,"! 2100 | Ghoul",1350882086172495902,25.38
+5,"2100| $tunna",998816127851450479,24.879999999999995
+6,"! 2100 | tbot",785584082909790238,23.209999999999997
+7,"2100 | Bandø",843200796833349673,20.56
+8,"! 2100 | Phillyo",199507394676391936,19.090000000000007
+9,"! 2100 | £",1059489772629925908,17.560000000000002
+10,"! 2100 | Krispy",912552527520731136,16.66
+11,"2100 | proto",1069042511789707334,15.990000000000002
+12,"discord.gg/dih7",1223087991044571177,14.399999999999999
+13,"! 42 | Mack",273986882612887553,12.919999999999998
+14,"²¹⁰⁰ | 𝖗𝖊𝖝𝖞",1030767052065095691,12.43
+15,"EBK | RTK",699779349431320627,12.389999999999999
+16,"2100 | 𝕒𝕣𝕡",1356385051922927888,11.579999999999998
+17,"discord.gg/dih7",791865429110423552,10.669999999999996
+18,"2100 | JJ",1284924008113901684,10.35
+19,"2100 | Benji",726922558770774027,10.119999999999996
+20,"2100 | Phant",924351570836066344,10.119999999999996
+21,"Dih7",1188698050093395992,8.889999999999999
+22,"2100 | Bryan",1243977247455711346,8.02
+23,"pov",1074391797486338048,7.31
+24,"EBK | Johnson",1337957326358839357,6.999999999999997
+25,"2100 | X1m",1235626377336852504,6.13
+26,"2100 | Mat",1188496166632050770,5.909999999999999
+27,"2100/drizyo",1032659537422995486,4.74
+28,"! 42 | Leaky",396734283244503040,4.630000000000001
+29,"vini",1318999348415168573,4.099999999999999
+30,"! 42 | Ace ""Swova"" Ruin",927712855971745792,4.03
+31,"! 2100 | 𝑹𝒊𝒔𝒌𝒚",669775620393271326,3.9700000000000006
+32,"2100 | Alani",1302531704510222378,3.7399999999999998
+33,"2100 | KO_PN",1021148954328584244,3.6099999999999994
+34,"2100 | Dre",719720979638517822,3.32
+35,"dih7 or die bitch",744742620466774066,3.16
+36,"! 42 | Simple",668690604976373760,2.8999999999999995
+37,"²¹⁰⁰ | Nate",1289413240874340354,2.52
+38,"! RM | Pope ♰",1007297817011834973,2.48
+39,"2100 | Omar",763443540331200592,2.41
+40,"2100 | Tye",259144620498354176,2.4
+41,"2100 | Billybear18",685575972820615374,2.1
+42,"! s3 rifty",782788481025966084,1.9099999999999997
+43,"! EBK | Trey",1269912463118307401,1.68
+44,"# 2100 | 𝓂𝒶𝓈❤𝓃",1296571614967762965,1.67
+45,"2100 | Sampled",875722186525134879,1.6500000000000001
+46,"# 2100 | imdragon",578630869808447489,1.58
+47,"2100 | Colden",1385025019070906439,1.4000000000000001
+48,"EBK | EXOTIC",967081414388490334,1.1099999999999999
+49,"2100 | Cooper",1252420610966032418,1.1
+50,"CDR | Leon Reyes",1211499384844582992,1.06
+51,"J.Deer",818668605251256402,0.9900000000000001
+52,"traz",1036001013238345778,0.97
+53,"Dih7",860712417319059466,0.81
+54,"BRYALTACC",1441573877896712313,0.81
+55,"2100 | Boa",653019324742893584,0.7699999999999999
+56,"Pewwie",1006305854099816619,0.67
+57,"2100 | Crabby",809856340818264105,0.52
+58,"²¹⁰⁰ | GoodDayJayy",1027649629443067984,0.5
+59,"2100 | Reaper",690677654411804792,0.42
+60,"RW | ℑ𝔯𝔢𝔨𝔊",1449738445860900881,0.37
+61,"2100 | crxptzz",1051982767648407562,0.31000000000000005
+62,"! 𝖗𝖊𝖙 𝖙𝖒𝖍 02",1071143713675432026,0.24
+63,"2100 | Wizz",1301987853856931843,0.17
+64,"Michael",750767927111975084,0.15000000000000002
+65,"OfcWestbrook",1332453814162296853,0.05
