@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2100 Hours Leaderboard</title>
 <style>
-body {font-family: Arial, sans-serif; background:#0a0a0a; color:#fff; margin:0; padding:2rem;}
+body {font-family: Arial, sans-serif; background:#0a0a0a; color:#fff; padding:2rem;}
 h1 {text-align:center; margin-bottom:2rem; color:#ff0000;}
 table {width:100%; border-collapse: collapse; max-width:800px; margin:0 auto;}
 th, td {padding:0.8rem 1rem; text-align:left; border-bottom:1px solid #444;}
@@ -24,42 +24,39 @@ td.hours {text-align:right; color:#ffd700; font-weight:bold;}
 <th>Hours This Week</th>
 </tr>
 </thead>
-<tbody id="leaderboard-body">
-<!-- Leaderboard rows go here -->
-</tbody>
+<tbody id="leaderboard-body"></tbody>
 </table>
 
 <script>
-const CSV_URL = "./statbot.csv"; // make sure your CSV is named statbot.csv
+const CSV_URL = "./statbot.csv";
 
-// Parse CSV into objects
+// Parse CSV and clean data
 function parseCSV(csv) {
     const lines = csv.trim().split("\n");
     const headers = lines.shift().split(",");
     return lines.map(line => {
         const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         const obj = {};
-        headers.forEach((h, i) => obj[h.trim()] = values[i]?.replace(/^"|"$/g,'') || '');
+        headers.forEach((h, i) => obj[h.trim()] = (values[i] || '').replace(/^"|"$/g,''));
+        // Clean the count so NaN doesn't happen
+        obj.count = parseFloat(obj.count.replace(/[^0-9.]/g,'')) || 0;
         return obj;
     });
 }
 
-// Display leaderboard
 function displayLeaderboard(data) {
-    // Sort by count descending
-    const sorted = data.sort((a,b) => Number(b.count) - Number(a.count));
+    const sorted = data.sort((a,b) => b.count - a.count);
     const tbody = document.getElementById("leaderboard-body");
     tbody.innerHTML = "";
     sorted.forEach(u => {
         tbody.innerHTML += `
         <tr>
             <td>${u.username}</td>
-            <td class="hours">${Number(u.count).toFixed(2)}</td>
+            <td class="hours">${u.count.toFixed(2)}</td>
         </tr>`;
     });
 }
 
-// Fetch CSV and show
 fetch(CSV_URL)
     .then(res => res.text())
     .then(csv => {
